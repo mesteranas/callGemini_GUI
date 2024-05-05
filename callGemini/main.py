@@ -18,7 +18,7 @@ import langdetect
 from PyQt6.QtMultimedia import QAudioOutput,QMediaPlayer
 genai.configure(api_key="")
 TextModel=genai.GenerativeModel('gemini-pro')
-class Thread(qt2.QRunnable):
+class Thread(qt2.QThread):
     def __init__(self,player):
         super().__init__()
         self.player=player
@@ -40,7 +40,7 @@ class Thread(qt2.QRunnable):
                 audio=SR.listen(src)
             try:
                 winsound.PlaySound("data/sounds/2.wav",1)
-                text=SR.recognize_google(audio)
+                text=SR.recognize_google(audio,language=settings_handler.get("g","speekLanguage"))
             except:
                 text="sorry"
             winsound.PlaySound("data/sounds/3.wav",1)
@@ -70,9 +70,8 @@ class main (qt.QMainWindow):
 
         self.setWindowTitle(app.name + _("version : ") + str(app.version))
         self.thread=Thread(self.player)
+        self.thread.start()
         layout=qt.QVBoxLayout()
-        self.run=qt2.QThreadPool(self)
-        self.run.start(self.thread)
         self.setting=qt.QPushButton(_("settings"))
         self.setting.setDefault(True)
         self.setting.clicked.connect(lambda: settings(self).exec())
@@ -122,7 +121,7 @@ class main (qt.QMainWindow):
         if settings_handler.get("update","autoCheck")=="True":
             update.check(self,message=False)
     def closeEvent(self, event):
-        self.run.destroyed()
+        self.thread.terminate()
         if settings_handler.get("g","exitDialog")=="True":
             m=guiTools.ExitApp(self)
             m.exec()

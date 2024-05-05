@@ -27,3 +27,11 @@ class Genral(qt.QWidget):
         layout1.addWidget(label)
         layout1.addWidget(self.language)
         layout1.addWidget(self.ExitDialog)
+        self.SpeekLanguage=qt.QComboBox()
+        self.SpeekLanguage.setAccessibleName(_("your language"))
+        self.SpeekLanguage.addItems(guiTools.dictionarys.languages)
+        dic={}
+        for key,value in guiTools.dictionarys.languages.items():
+            dic[value]=key
+        self.SpeekLanguage.setCurrentText(dic[settings_handler.get("g","speekLanguage")])
+        layout1.addWidget(self.SpeekLanguage)

@@ -10,6 +10,7 @@ if not os.path.exists(cpath):
 	config.add_section("g")
 	config["g"]["lang"] = "en"
 	config["g"]["exitDialog"] = "True"
+	config["g"]["speekLanguage"]="en"
 	config.add_section("update")
 	config["update"]["autoCheck"]="True"
 	config["update"]["beta"]="False"
